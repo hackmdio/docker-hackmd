@@ -72,9 +72,11 @@ Similar to backup steps, but last command is
 
 The default setting would use pre-build docker image, follow below steps to customize your HackMD.
 
-1. Modify `docker-compose.yml` at line 8 `image: hackmdio/hackmd:0.4.5` to `build: hackmd`.
+1. Modify `docker-compose.yml` at line 8 `image: hackmdio/hackmd:0.4.6` to `build: hackmd`.
 2. Change the config files `hackmd/config.js` or `hackmd/config.json`, guide [here](https://github.com/hackmdio/hackmd/#configuration-files).
 3. Run `docker-compose build --no-cache` in the docker terminal to build your own image.
 4. Then `docker-compose up` to startup.
+
+*Use `--build-arg VERSION=0.4.6` to build latest release. By default the latest dev version is build.*
 
 **Happy HackMD :smile:**
