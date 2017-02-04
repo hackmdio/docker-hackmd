@@ -1,5 +1,6 @@
 FROM node:boron
 ENV DEBIAN_FRONTEND noninteractive
+ENV HACKMD_VERSION 0.5.0
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
 	wget -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add - && \
 	apt-get update && \
@@ -8,7 +9,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/
 # source
 RUN mkdir /hackmd
 WORKDIR /hackmd
-RUN git clone https://github.com/hackmdio/hackmd.git /hackmd
+RUN git clone --branch ${HACKMD_VERSION:-master} --depth 1 https://github.com/hackmdio/hackmd.git /hackmd
 
 # npm, deps
 RUN npm install
