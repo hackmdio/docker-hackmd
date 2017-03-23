@@ -19,6 +19,7 @@ RUN npm install
 
 # add config
 ADD config.json /hackmd/config.json
+ADD configure.js /hackmd/configure.js
 ADD .sequelizerc /hackmd/.sequelizerc
 ADD docker-entrypoint.sh /hackmd/docker-entrypoint.sh
 RUN chmod +x /hackmd/docker-entrypoint.sh
