@@ -12,7 +12,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" > /etc/
 # source
 RUN mkdir /hackmd
 WORKDIR /hackmd
-RUN git clone https://github.com/hackmdio/hackmd.git /hackmd
+RUN git clone -b master --single-branch https://github.com/hackmdio/hackmd.git /hackmd
 
 # npm, deps
 RUN npm install
