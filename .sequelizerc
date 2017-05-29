@@ -4,5 +4,5 @@ module.exports = {
     'config':          path.resolve('config.json'),
     'migrations-path': path.resolve('lib', 'migrations'),
     'models-path':     path.resolve('lib', 'models'),
-    'url':             'postgres://hackmd:hackmdpass@hackmdPostgres:5432/hackmd'
+    'url':             process.env.HMD_DB_URL
 }

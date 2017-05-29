@@ -1,15 +1,52 @@
-hackmdPostgres:
-  image: postgres
-  environment:
-    - POSTGRES_USER=hackmd
-    - POSTGRES_PASSWORD=hackmdpass
-    - POSTGRES_DB=hackmd
-hackmd:
-  image: hackmdio/hackmd:latest
-  environment:
-    - POSTGRES_USER=hackmd
-    - POSTGRES_PASSWORD=hackmdpass
-  links:
-    - hackmdPostgres:hackmdPostgres
-  ports:
-    - "3000:3000"
+version: '2'
+services:
+  database:
+    # Don't upgrade postgres by simply changing the version number
+    # You need to migrate the Database to the new postgres version
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_USER=hackmd
+      - POSTGRES_PASSWORD=hackmdpass
+      - POSTGRES_DB=hackmd
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      backend:
+        aliases:
+          - hackmdPostgres
+          - hackmdpostgres
+    restart: always
+  app:
+    # Uncomment the following section to build the image yourself:
+    #build: 
+    #  context: .
+    #  dockerfile: debian/Dockerfile
+    image: hackmdio/hackmd:0.5.1
+    environment:
+      # DB_URL is formatted like: <databasetype>://<username>:<password>@<hostname>/<database>
+      # Other examples are: 
+      # - mysql://database:3306/database
+      # - sqlite:///data/sqlite.db (NOT RECOMMENDED)
+      # - For details see the official sequelize docs: http://docs.sequelizejs.com/en/v3/
+      - HMD_DB_URL=postgres://hackmd:hackmdpass@hackmdPostgres:5432/hackmd
+    ports:
+      # Ports that are published to the outside.
+      # The latter port is the port inside the container. It should always stay on 3000
+      # If you only specify a port it'll published on all interfaces. If you want to use a 
+      # local reverse proxy, you may want to listen on 127.0.0.1.
+      # Example:
+      # - "127.0.0.1:3000:3000"
+      - "3000:3000"
+    networks:
+      backend:
+    restart: always
+
+# Define networks to allow best isolation
+networks:
+  # Internal network for communication with Postgres
+  backend:
+
+# Define named volumes so data stays in place
+volumes:
+  # Volume for Postgres database
+  database:
