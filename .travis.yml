@@ -36,7 +36,7 @@ after_success:
   # $DOCKER_PASSWORD    - Password of the Docker Hub user used to push the image
   # See https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$DOCKER_REPO_PREFIX" != "" ] && [ "$DOCKER_REPO_NAME" != "" ] && [ "$DOCKER_USERNAME" != "" ] && [ "$DOCKER_PASSWORD" != "" ]; then
-    tools/tagging.sh "${DOCKER_REPO_PREFIX}/${DOCKER_REPO_NAME}" "${HMD_VERSION:-latest}" "";
+    tools/tagging.sh "${DOCKER_REPO_PREFIX}/${DOCKER_REPO_NAME}" "${HMD_VERSION:-latest}" "$BASE";
     docker images "${DOCKER_REPO_PREFIX}/${DOCKER_REPO_NAME}";
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker images --format "{{.Repository}}:{{.Tag}}" "${DOCKER_REPO_PREFIX}/${DOCKER_REPO_NAME}" | xargs -L 1 docker push ;
