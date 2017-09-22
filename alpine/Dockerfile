@@ -29,9 +29,9 @@ RUN apk add --no-cache --virtual .dep build-base python git bash && \
     rm -f /hackmd/config.json && ln -s /files/config.json /hackmd/config.json && \
     rm -f /hackmd/.sequelizerc && ln -s /files/.sequelizerc /hackmd/.sequelizerc && \
     # Install NPM dependencies and build project
-    npm install && \
-    npm install --dev && \
-    npm install -g webpack && \
+    yarn install && \
+    yarn install --production=false && \
+    yarn global add webpack && \
     npm run build && \
     # Clean up this layer
     npm prune --production && \
