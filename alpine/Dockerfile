@@ -8,6 +8,10 @@ ARG VERSION=master
 ENV DOCKERIZE_VERSION=v0.3.0
 ENV NODE_ENV=production
 
+# Disable PDF export on alpine
+# PhantomJS is broken on alpine and crashes HackMD
+ENV HMD_ALLOW_PDF_EXPORT=false
+
 RUN apk add --no-cache --virtual .download wget  ca-certificates && \
     wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
