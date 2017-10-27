@@ -5,6 +5,7 @@
 docker-hackmd
 ===
 
+
 [migration-to-0.5.0](https://github.com/hackmdio/migration-to-0.5.0)
 ---
 
@@ -22,20 +23,26 @@ Please run the migration tool if you're upgrading from the old version.
 9. Modify `docker-compose.yml`, remove expose ports `5432` in `hackmdPostgres`
 10. git pull in `docker-hackmd`, update to version 0.5.0 (see below)
 
-## Prerequisite
-* git
-* docker (docker toolbox recommended)
-* docker-compose (included in the docker toolbox)
 
-See more here: https://www.docker.com/docker-toolbox
+# Prerequisite
+* git
+* docker (https://www.docker.com/community-edition)
+* docker-compose (https://docs.docker.com/compose/install/)
+
+See more here: https://docs.docker.com/
+
+
+# Usage
 
 ## Get started
 
-1. Start you docker via `Docker Quickstart Terminal`, you will see a machine IP (remember that).
-2. Run `git clone https://github.com/hackmdio/docker-hackmd.git`.
-3. Run `docker-compose up` in your docker terminal.
-4. Wait until see th log `HTTP Server listening at port 3000`, it will take few minutes based on your internet.
-5. Open any browser and surf `<machine IP>:3000`
+1. Install docker and docker-compose, "Docker for Windows" or "Docker for Mac"
+2. Run `git clone https://github.com/hackmdio/docker-hackmd.git`
+3. Change to the directory `docker-hackmd` directory
+4. Run `docker-compose up` in your terminal
+5. Wait until see the log `HTTP Server listening at port 3000`, it will take few minutes based on your internet connection.
+6. Open http://127.0.0.1:3000
+
 
 ## Update
 
@@ -48,37 +55,58 @@ docker-compose pull ## pull new containers
 docker-compose up ## turn on
 ```
 
+
 ## Backup
 
 Start your docker and enter the terminal, follow below commands:
 
-- run `docker ps` to check all your containers
 ```bash
-➜  ~  docker ps
-CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                    NAMES
-2c04d7b1b8d4        dockerhackmd_hackmd   "/bin/bash /hackmd/do"   3 days ago          Up 17 seconds       0.0.0.0:3000->3000/tcp   dockerhackmd_hackmd_1
-4949b888c1cb        postgres              "/docker-entrypoint.s"   3 days ago          Up 18 seconds       5432/tcp                 dockerhackmd_db-postgres_1
+ docker-compose exec hackmdPostgres pg_dump hackmd -U hackmd  > backup.sql
 ```
-- backup postgresql by `docker exec <postgresql_container_id> pg_dump hackmd -U postgres > <postgresql_backup_name>`
-```bash
-➜  ~  docker exec 4949b888c1cb pg_dump hackmd -U postgres > postgresql_backup.sql
-```
-- copy your backup out of container by `docker cp <container_id>:<backup_path> <host_path>`
+
 
 ## Restore
 
 Similar to backup steps, but last command is
 ```bash
-➜  ~  cat postgresql_backup.sql | docker exec -i <container_id> psql -U hackmd
+cat backup.sql | docker exec -i $(docker-compose ps -q hackmdPostgres) psql -U hackmd
 ```
 
-### Custom build
 
-The default setting would use pre-build docker image, follow below steps to customize your HackMD.
+# Custom build
 
-1. Modify `docker-compose.yml` at line 8 `image: hackmdio/hackmd:0.4.5` to `build: hackmd`.
-2. Change the config file `hackmd/config.json`, guide [here](https://github.com/hackmdio/hackmd/#configuration-files).
-3. Run `docker-compose build --no-cache` in the docker terminal to build your own image.
-4. Then `docker-compose up` to startup.
+The default setting would use pre-build docker image, if you want to build your own containers
+uncomment the `build` section in the [`docker-compose.yml`](https://github.com/hackmdio/docker-hackmd/blob/master/docker-compose.yml) and edit the [`config.json`](https://github.com/hackmdio/docker-hackmd/blob/master/config.json).
+
+If you change the database settings and don't use the `HMD_DB_URL` make sure you edit the [`.sequelizerc`](https://github.com/hackmdio/docker-hackmd/blob/master/.sequelizerc).
+
+
+# License
+
+View [license information](https://github.com/hackmdio/hackmd) for the software contained in this image.
+
+
+# Supported Docker versions
+
+This image is officially supported on Docker version 17.03.1-CE.
+
+Support for older versions (down to 1.12) is provided on a best-effort basis.
+
+Please see [the Docker installation documentation](https://docs.docker.com/installation/) for details on how to upgrade your Docker daemon.
+
+
+# User Feedback
+
+## Issues
+
+If you have any problems with or questions about this image, please contact us through a [GitHub issue](https://github.com/hackmdio/docker-hackmd/issues).
+
+You can also reach many of the project maintainers via the `hackmd` channel on [Gitter](https://gitter.im/hackmdio/hackmd).
+
+
+## Contributing
+
+You are invited to contribute new features, fixes, or updates, large or small; we are always thrilled to receive pull requests, and do our best to process them as fast as we can.
+
 
 **Happy HackMD :smile:**

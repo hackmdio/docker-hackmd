@@ -1,0 +1,44 @@
+sudo: required
+language: bash
+services:
+  - docker
+
+env:
+  global:
+    - DOCKER_REPO=hackmdio/hackmd
+  matrix:
+    - BASE=debian
+    - BASE=alpine
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y parallel
+
+install:
+  # Build images
+  - docker build --build-arg VERSION=${HMD_VERSION:-master} -f $BASE/Dockerfile -t hackmd:testing .
+
+
+before_script:
+  # Run a database container with default settings
+  - docker run --name hackmd-database -e POSTGRES_USER=hackmd -e POSTGRES_PASSWORD=hackmdpass -e POSTGRES_DB=hackmd -d postgres:9.5
+
+script:
+  # Run all tests from test directory
+  - ls tests/*.sh | parallel
+
+after_success:
+  # Push successful builds of the master branch to Docker Hub
+  # You need to define $DOCKER_REPO_PREFIX, $DOCKER_REPO_NAME, $DOCKER_USERNAME and $DOCKER_PASSWORD in your Travis settings.
+  # $DOCKER_REPO_PREFIX - Organisation of username who owns the repo on Docker Hub
+  # $DOCKER_REPO_NAME   - Repository name on Docker Hub
+  # $DOCKER_USERNAME    - Docker Hub username used to push the image
+  # $DOCKER_PASSWORD    - Password of the Docker Hub user used to push the image
+  # See https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$DOCKER_REPO_PREFIX" != "" ] && [ "$DOCKER_REPO_NAME" != "" ] && [ "$DOCKER_USERNAME" != "" ] && [ "$DOCKER_PASSWORD" != "" ]; then
+    tools/tagging.sh "${DOCKER_REPO_PREFIX}/${DOCKER_REPO_NAME}" "${HMD_VERSION:-latest}" "$BASE";
+    docker images "${DOCKER_REPO_PREFIX}/${DOCKER_REPO_NAME}";
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker images --format "{{.Repository}}:{{.Tag}}" "${DOCKER_REPO_PREFIX}/${DOCKER_REPO_NAME}" | xargs -L 1 docker push ;
+    docker run --rm -v "$(pwd)/:/data/:ro" -e "DOCKERHUB_USERNAME=$DOCKER_USERNAME" -e "DOCKERHUB_PASSWORD=$DOCKER_PASSWORD" -e "DOCKERHUB_REPO_PREFIX=$DOCKER_REPO_PREFIX" -e "DOCKERHUB_REPO_NAME=$DOCKER_REPO_NAME" sheogorath/readme-to-dockerhub;
+    fi
