@@ -63,6 +63,8 @@ services:
       # Example:
       # - "127.0.0.1:3000:3000"
       - "3000:3000"
+    volumes:
+      - uploads:/hackmd/public/uploads
     networks:
       backend:
     restart: always
@@ -78,3 +80,5 @@ networks:
 volumes:
   # Volume for PostgreSQL/MySQL database
   database:
+  # Volume for store images 
+  uploads:
