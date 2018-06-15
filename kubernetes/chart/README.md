@@ -18,7 +18,7 @@ It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/mast
 ```console
 $ git clone https://github.com/hackmdio/docker-hackmd.git
 $ helm install ./docker-hackmd/kubernetes/chart \
-    --set image.tag=latest  # Currently, defalut image tag (0.5.1) doesn't work
+    --set image.tag=latest  # Currently, default image tag (0.5.1) doesn't work
                             # This is temporary fix to install HackMD via container image
 ```
 
