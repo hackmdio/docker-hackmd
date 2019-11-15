@@ -1,5 +1,13 @@
-docker-hackmd
+docker-hackmd (DEPRECATED)
 ===
+
+<h1 style="color: red;">!!!Warning!!!</h1>
+
+This repository has been deprecated. Please use our online documentation instead:
+
+[https://hackmd.io/c/codimd-documentation/%2Fs%2Fcodimd-docker-deployment](https://hackmd.io/c/codimd-documentation/%2Fs%2Fcodimd-docker-deployment)
+
+---
 
 [![Build Status](https://travis-ci.org/hackmdio/docker-hackmd.svg?branch=master)](https://travis-ci.org/hackmdio/docker-hackmd)
 [![Gitter](https://badges.gitter.im/hackmdio/hackmd.svg)](https://gitter.im/hackmdio/hackmd?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
